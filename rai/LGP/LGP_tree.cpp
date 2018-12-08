@@ -506,8 +506,15 @@ void LGP_Tree::reportEffectiveJoints() {
 }
 
 void LGP_Tree::step() {
-  expandNext();
-  
+  cout <<"expand_step!" << endl;
+  if(fringe_expand.N) 
+  {
+    expandNext();
+  }
+  else
+  {
+    return;
+  }
   uint numSol = fringe_solved.N;
   
 //  if(rnd.uni()<.5) optBestOnLevel(BD_pose, fringe_pose, BD_symbolic, &fringe_seq, &fringe_pose);
@@ -548,6 +555,8 @@ void LGP_Tree::buildTree(uint depth) {
   
   rai::timerRead(true);
   for(uint k=0;; k++) {
+    if(!fringe_expand.N) break;
+    cout <<"expand!" << endl;
     LGP_Node *b = expandNext(depth);
     if(!b) break;
   }
@@ -583,7 +592,7 @@ void LGP_Tree::run(uint steps) {
   init();
   
   uint stopSol = rai::getParameter<uint>("LGP/stopSol", 12);
-  double stopTime = rai::getParameter<double>("LGP/stopTime", 400.);
+  double stopTime = rai::getParameter<double>("LGP/stopTime", 60.);
   
   for(uint k=0; k<steps; k++) {
     step();
